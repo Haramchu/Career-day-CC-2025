@@ -1,50 +1,22 @@
-# Clement Samuel Marly – Personal Portfolio
+# Career Day Registration Web Microapp
 
-Welcome to my personal portfolio website! This is a React-based web application built to showcase my projects, teaching experience, skills, and creative work.
+This is a simple web microapp designed for registering participants in the Career Day event at Canisius College High School Jakarta.
 
-🚀 **Live site:** [https://clement-portfolio.vercel.app](https://clement-portfolio.vercel.app)  
-📫 **Contact:** clementsamuelm@gmail.com
+## Features
 
-## ✨ Features
+- Easy registration for students and guests
+- User-friendly interface
+- Lightweight and fast
 
-- Introduction and About Me section
-- Project showcase with links and tech stacks
-- Experience highlights (TA roles, event coordination)
-- Awards & certifications
-- Photography & event gallery (optional)
-- Contact section with LinkedIn and GitHub links
+## Getting Started
 
-## 🛠️ Tech Stack
+1. Clone the repository.
+2. Follow the setup instructions to run the app locally.
 
-- **Frontend:** React.js, Tailwind CSS (or your CSS framework of choice)
-- **Deployment:** Vercel
-- **Version Control:** Git & GitHub
+## Purpose
 
-## 📁 Folder Structure
+To streamline the registration process for Career Day, making it efficient and accessible for all attendees.
 
-- /src
-- /components
-- Navbar.jsx
-- About.jsx
-- Projects.jsx
-- Experience.jsx
-- Footer.jsx
-- /assets
-- images, certificates, etc.
-- App.jsx
-- index.js
+## License
 
-
-## 🧠 Inspiration & Goals
-
-This site is built to reflect both my technical and creative sides. It serves as a central place for recruiters, collaborators, and fellow students to explore my work and get in touch.
-
-## 🖼️ Screenshot
-
-*(You can add a screenshot or preview image of the deployed site once done.)*
-
-## 🔗 Connect with Me
-
-- [LinkedIn](https://linkedin.com/in/clement-samuel-marly-370aab256)
-- [GitHub](https://github.com/yourusername)
-- Email: clementsamuelm@gmail.com
+This project is for educational purposes at Canisius College High School Jakarta.
