@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
@@ -7,6 +7,11 @@ const MyTalks = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [pendingTalkId, setPendingTalkId] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  useEffect(() => {
+    if (!user) navigate('/login');
+  }, [navigate, user]);
 
   // Dummy enrolled talks data
   const [enrolledTalks, setEnrolledTalks] = useState([
@@ -63,7 +68,7 @@ const MyTalks = () => {
   const handleConfirm = () => {
     setModalVisible(false);
     setTimeout(() => setConfirmOpen(false), MODAL_TRANSITION_MS);
-    
+
     // Remove the talk from enrolled talks
     setEnrolledTalks((prev) => prev.filter(talk => talk.id !== pendingTalkId));
     setPendingTalkId(null);
@@ -82,7 +87,7 @@ const MyTalks = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
       <Navbar />
-      
+
       {/* Background blur decoration */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
@@ -130,10 +135,10 @@ const MyTalks = () => {
                   </span>
                   <span className="text-sm text-white/70">{talk.time}</span>
                 </div>
-                
+
                 <h3 className="text-xl font-bold mb-2">{talk.title}</h3>
                 <p className="text-white/90 mb-3">{talk.description}</p>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
@@ -143,7 +148,7 @@ const MyTalks = () => {
                     </div>
                     <span className="text-white/80 text-sm">{talk.speaker}</span>
                   </div>
-                  
+
                   <button
                     onClick={() => handleRemoveClick(talk.id)}
                     className="group relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-full shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 hover:from-red-400 hover:to-red-500"
@@ -173,9 +178,8 @@ const MyTalks = () => {
       {confirmOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
           <div
-            className={`bg-white rounded-xl p-6 w-full max-w-md transform transition-all duration-200 ${
-              modalVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-            }`}
+            className={`bg-white rounded-xl p-6 w-full max-w-md transform transition-all duration-200 ${modalVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              }`}
           >
             <h4 className="text-xl font-bold text-black mb-2">Remove Talk</h4>
             <p className="text-gray-700 mb-4">

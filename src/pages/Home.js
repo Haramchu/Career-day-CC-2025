@@ -1,9 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import ccLogo from '../assets/cc.png';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 
 const Home = () => {
@@ -12,7 +10,7 @@ const Home = () => {
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (!user) navigate('/login');
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">

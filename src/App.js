@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CareerDayProvider } from './contexts/CareerDayContext';
 import Home from './pages/Home';
-import Form from './pages/Form';
 import DatabaseTest from './components/DatabaseTest';
 import './App.css';
 import SessionPage from './pages/Session';
@@ -16,7 +15,6 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/enroll" element={<Form />} />
             <Route path="/test-db" element={<DatabaseTest />} />
             <Route path="/sessions" element={<SessionPage />} />
             <Route path="/my-talks" element={<MyTalks />} />
