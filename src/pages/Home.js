@@ -16,13 +16,11 @@ const Home = () => {
         <div className="text-center">
           {/* Logo and Header */}
           <div className="flex flex-col items-center mb-8">
-            <div className="bg-white rounded-full p-4 shadow-2xl mb-6 transform hover:scale-105 transition-transform duration-300">
               <img 
                 src={ccLogo} 
                 alt="Canisius College Jakarta" 
                 className="w-24 h-24 md:w-32 md:h-32 object-contain"
               />
-            </div>
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
               Canisius College Jakarta
             </h1>
