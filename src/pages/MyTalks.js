@@ -138,27 +138,26 @@ const MyTalks = () => {
         )}
       </div>
 
-      {/* Modal */}
       {confirmOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
           <div
-            className={`bg-white rounded-xl p-6 w-full max-w-md transform transition-all duration-200 ${modalVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            className={`bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 text-white rounded-2xl p-6 w-full max-w-md shadow-2xl transform transition-all duration-200 ${modalVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
           >
-            <h4 className="text-xl font-bold text-black mb-2">Remove Talk</h4>
-            <p className="text-gray-700 mb-4">
+            <h4 className="text-2xl font-bold mb-3 text-center drop-shadow">Remove Talk</h4>
+            <p className="text-white/90 text-center mb-6 leading-relaxed">
               Are you sure you want to remove <strong>{getTalkToRemove()?.event_topik}</strong>?
             </p>
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-center gap-4">
               <button
                 onClick={handleCancel}
-                className="px-4 py-2 text-sm bg-gray-300 rounded-lg hover:bg-gray-400 transition-colors"
+                className="px-5 py-2 rounded-full bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 text-white font-semibold shadow-md hover:scale-105 transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirm}
-                className="px-4 py-2 text-sm bg-red-500 rounded-lg hover:bg-red-600 text-white font-semibold transition-colors"
+                className="px-5 py-2 rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-red-400 text-white font-semibold shadow-md hover:scale-105 transition-all duration-200"
               >
                 Remove
               </button>
