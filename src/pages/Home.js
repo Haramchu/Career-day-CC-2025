@@ -8,13 +8,13 @@ import { supabase } from '../lib/supabase';
 const Home = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) navigate('/login');
-    };
-    checkAuth();
-  }, []);
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     const { data: { user } } = await supabase.auth.getUser();
+  //     if (!user) navigate('/login');
+  //   };
+  //   checkAuth();
+  // }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
@@ -24,16 +24,16 @@ const Home = () => {
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-300 rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-300 rounded-full blur-3xl"></div>
       </div>
-      
+
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="text-center">
           {/* Logo and Header */}
           <div className="flex flex-col items-center mb-8">
-              <img 
-                src={ccLogo} 
-                alt="Canisius College Jakarta" 
-                className="w-24 h-24 md:w-32 md:h-32 object-contain"
-              />
+            <img
+              src={ccLogo}
+              alt="Canisius College Jakarta"
+              className="w-24 h-24 md:w-32 md:h-32 object-contain"
+            />
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
               Canisius College Jakarta
             </h1>
@@ -45,11 +45,11 @@ const Home = () => {
           </div>
           <div className="backdrop-blur-sm bg-white/20 rounded-2xl shadow-2xl p-8 mb-12 max-w-4xl mx-auto border border-white/30">
             <p className="text-xl text-white mb-8 leading-relaxed">
-              Join us for an exciting career exploration event where students can discover 
-              various career paths, meet industry professionals, and gain valuable insights 
+              Join us for an exciting career exploration event where students can discover
+              various career paths, meet industry professionals, and gain valuable insights
               about their future careers.
             </p>
-            
+
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
               <h3 className="text-2xl font-bold text-white mb-6 flex items-center justify-center">
                 <span className="mr-3">📅</span>
@@ -106,8 +106,8 @@ const Home = () => {
           </div>
 
           <div className="animate-pulse">
-            <Link 
-              to="/enroll" 
+            <Link
+              to="/sessions"
               className="group relative inline-flex items-center justify-center px-12 py-4 text-lg font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105 hover:from-yellow-300 hover:to-orange-400"
             >
               <span className="relative z-10">Enroll Now</span>
