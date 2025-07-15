@@ -9,13 +9,10 @@ import Navbar from '../components/Navbar';
 const Home = () => {
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const checkAuth = async () => {
-  //     const { data: { user } } = await supabase.auth.getUser();
-  //     if (!user) navigate('/login');
-  //   };
-  //   checkAuth();
-  // }, []);
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (!user) navigate('/login');
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
