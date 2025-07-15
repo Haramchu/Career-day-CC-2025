@@ -24,7 +24,7 @@ const SessionPage = () => {
         const fetchEvents = async () => {
             const { data, error } = await supabase.from('event').select('*');
             if (error) {
-                console.error('Failed to fetch events:', error);
+                setErrorMessage('Failed to fetch events.');
             } else {
                 setEvents(data);
                 if (user) {
@@ -71,7 +71,7 @@ const SessionPage = () => {
             .single();
 
         if (eventError || !eventData) {
-            alert('Failed to fetch event details');
+            setErrorMessage('Failed to fetch event details.');
             return;
         }
 
@@ -81,12 +81,11 @@ const SessionPage = () => {
             return;
         }
 
-
         const session = eventData.event_sesi;
         const column = session === 1 ? 'student_event_1' : 'student_event_2';
 
         if (user[column]) {
-            alert(`You have already enrolled in Session ${session}`);
+            setErrorMessage(`You have already enrolled in Session ${session}.`);
             return;
         }
 
@@ -96,7 +95,7 @@ const SessionPage = () => {
             .eq('student_email', user.student_email);
 
         if (updateError) {
-            alert('Enrollment failed: ' + updateError.message);
+            setErrorMessage('Enrollment failed: ' + updateError.message);
             return;
         }
 
@@ -194,19 +193,17 @@ const SessionPage = () => {
                         </div>
                     </div>
                 )}
+                {/* General Error Message Pop-up */}
                 {errorMessage && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-                        <div className="bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 text-white rounded-2xl p-6 w-full max-w-md shadow-2xl transform transition-all duration-200 scale-100 opacity-100">
-                            <h4 className="text-2xl font-bold mb-3 text-center drop-shadow">Talk Full</h4>
-                            <p className="text-white/90 text-center mb-6 leading-relaxed">{errorMessage}</p>
-                            <div className="flex justify-center">
-                                <button
-                                    onClick={() => setErrorMessage('')}
-                                    className="px-5 py-2 rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-red-400 text-white font-semibold shadow-md hover:scale-105 transition-all duration-200"
-                                >
-                                    OK
-                                </button>
-                            </div>
+                    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 px-4">
+                        <div className="bg-gradient-to-br from-red-500 via-orange-500 to-yellow-400 text-white rounded-xl p-4 w-full max-w-md shadow-2xl flex items-center gap-4">
+                            <div className="flex-1">{errorMessage}</div>
+                            <button
+                                onClick={() => setErrorMessage('')}
+                                className="ml-4 px-3 py-1 rounded-full bg-white/20 hover:bg-white/40 text-white font-semibold transition"
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 )}
