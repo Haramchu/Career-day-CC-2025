@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const talksPerSession = 20;
 
@@ -54,6 +55,8 @@ const SessionPage = () => {
 
 return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
+    <Navbar />
+    
     {/* Background blur decoration */}
             <div className="absolute inset-0 opacity-10 pointer-events-none">
                 <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
@@ -62,13 +65,6 @@ return (
             </div>
 
             <div className="container mx-auto px-4 py-16 relative z-10">
-                <button
-                    onClick={() => navigate('/')}
-                    className="mb-10 px-4 py-1.5 text-base bg-white/20 text-white rounded-lg hover:bg-white/30 border border-white/30 transition"
-                >
-                    &larr; Back to Home
-                </button>
-
                 {[1, 2].map((sessionId) => (
                     <div key={sessionId} className="mb-16">
                     <h2 className="text-3xl font-bold text-white mb-8 text-center drop-shadow-md">
