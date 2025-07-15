@@ -1,11 +1,17 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ccLogo from '../assets/cc.png';
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   return (
     <nav className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
@@ -22,7 +28,7 @@ const Navbar = () => {
           </Link>
 
           {/* Navigation Links */}
-          <div className="flex space-x-8">
+          <div className="flex space-x-8 items-center">
             <Link
               to="/"
               className={`text-white hover:text-yellow-400 transition-colors duration-200 font-medium ${
@@ -47,6 +53,14 @@ const Navbar = () => {
             >
               My Talks
             </Link>
+            <button
+              onClick={handleLogout}
+              className="text-white hover:text-yellow-400 transition-colors duration-200 font-medium focus:outline-none border-0 bg-transparent px-0 py-0"
+              style={{ borderBottom: '2px solid transparent' }}
+              onMouseOut={e => (e.currentTarget.style.borderBottom = '2px solid transparent')}
+            >
+              Logout
+            </button>
           </div>
         </div>
       </div>
