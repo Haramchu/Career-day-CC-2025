@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Form from './pages/Form';
 import './App.css';
+import SessionPage from './pages/Session';
+import Login from './pages/Login';
 
 function App() {
   return (
@@ -11,6 +13,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/enroll" element={<Form />} />
+          <Route path="/sessions" element={<SessionPage />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>
