@@ -14,7 +14,7 @@ const Form = () => {
     year: '',
     careerInterests: ''
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
@@ -78,26 +78,24 @@ const Form = () => {
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-300 rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-300 rounded-full blur-3xl"></div>
       </div>
-      
+
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="group inline-flex items-center text-white hover:text-yellow-400 mb-6 transition-colors duration-300"
             >
               <span className="mr-2 group-hover:-translate-x-1 transition-transform duration-300">←</span>
               Back to Home
             </Link>
-            
+
             <div className="flex flex-col items-center mb-6">
-              <div className="bg-white rounded-full p-3 shadow-2xl mb-4 transform hover:scale-105 transition-transform duration-300">
-                <img 
-                  src={ccLogo} 
-                  alt="Canisius College Jakarta" 
-                  className="w-16 h-16 object-contain"
-                />
-              </div>
+              <img
+                src={ccLogo}
+                alt="Canisius College Jakarta"
+                className="w-16 h-16 object-contain"
+              />
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
                 Career Day Enrollment
               </h1>
@@ -252,11 +250,10 @@ const Form = () => {
               </div>
 
               {submitMessage && (
-                <div className={`p-4 rounded-md ${
-                  submitMessage.includes('successful') 
-                    ? 'bg-green-50 text-green-800' 
+                <div className={`p-4 rounded-md ${submitMessage.includes('successful')
+                    ? 'bg-green-50 text-green-800'
                     : 'bg-red-50 text-red-800'
-                }`}>
+                  }`}>
                   {submitMessage}
                 </div>
               )}
