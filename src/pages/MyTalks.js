@@ -13,6 +13,10 @@ const MyTalks = () => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
+    if (!user) navigate('/login');
+  }, [navigate, user]);
+
+  useEffect(() => {
     const fetchMyTalks = async () => {
 
       const { data: studentData, error: studentError } = await supabase
@@ -50,7 +54,7 @@ const MyTalks = () => {
 
     if (!user) return navigate('/login');
     fetchMyTalks();
-  }, [navigate, user]);
+  }, [navigate]);
 
   const MODAL_TRANSITION_MS = 200;
 
