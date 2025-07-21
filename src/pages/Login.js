@@ -5,7 +5,7 @@ import ccLogo from '../assets/cc.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
-    const [nis, setNis] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -14,13 +14,13 @@ const Login = () => {
         setError('');
 
         const cleanEmail = email.trim();
-        const cleanNis = nis.trim();
+        const cleanPassword = password.trim();
 
         const { data, error } = await supabase
             .from('student')
             .select('*')
             .eq('student_email', cleanEmail)
-            .eq('student_password', cleanNis);
+            .eq('student_password', cleanPassword);
 
         if (error) {
             setError('Login failed: ' + error.message);
@@ -28,7 +28,7 @@ const Login = () => {
         }
 
         if (!data || data.length === 0) {
-            setError('Invalid email or NIS');
+            setError('Invalid email or password');
             return;
         }
 
@@ -78,12 +78,12 @@ const Login = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-white text-sm font-medium mb-1">NIS (Student ID)</label>
+                        <label className="block text-white text-sm font-medium mb-1">Password</label>
                         <input
                             type="password"
-                            placeholder="e.g., 123456"
-                            value={nis}
-                            onChange={(e) => setNis(e.target.value)}
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                             className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all duration-300"
                         />

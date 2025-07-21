@@ -58,7 +58,7 @@ const SessionPage = () => {
     };
 
     fetchData();
-  }, [user]);
+  }, []);
 
   const sessions = events.reduce((acc, event) => {
     const sessionId = event.event_sesi;
