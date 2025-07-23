@@ -13,12 +13,17 @@ const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); // 'success' or 'error'
+  const [isForced, setIsForced] = useState(false);
 
-  // Check if user is logged in when component mounts
+  // Check if user is logged in and if password change is forced
   useEffect(() => {
     const userString = localStorage.getItem('user');
+    const needsPasswordChange = localStorage.getItem('needsPasswordChange');
+    
     if (!userString) {
       navigate('/login');
+    } else if (needsPasswordChange === 'true') {
+      setIsForced(true);
     }
   }, [navigate]);
 
@@ -108,6 +113,9 @@ const ChangePassword = () => {
       setMessage('Password changed successfully!');
       setMessageType('success');
       
+      // Clear the forced password change flag
+      localStorage.removeItem('needsPasswordChange');
+      
       // Clear form
       setFormData({
         currentPassword: '',
@@ -145,9 +153,20 @@ const ChangePassword = () => {
             <h1 className="text-4xl font-bold text-white mb-4 drop-shadow-lg">
               Change Password
             </h1>
-            <p className="text-white/90">
-              Update your account password
-            </p>
+            {isForced ? (
+              <div className="bg-red-500/20 border border-red-400 rounded-lg p-4 mb-4">
+                <p className="text-red-200 font-medium">
+                  ⚠️ Password Change Required
+                </p>
+                <p className="text-red-100 text-sm mt-2">
+                  You must change your password before accessing other features. Your current password is the same as your student ID.
+                </p>
+              </div>
+            ) : (
+              <p className="text-white/90">
+                Update your account password
+              </p>
+            )}
           </div>
 
           <div className="backdrop-blur-sm bg-white/10 border border-white/20 p-8 rounded-2xl">
