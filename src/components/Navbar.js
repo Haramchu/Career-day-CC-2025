@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ccLogo from '../assets/cc.png';
 
@@ -6,12 +6,19 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [needsPasswordChange, setNeedsPasswordChange] = useState(false);
   const closeTimeoutRef = useRef(null);
 
   const isActive = (path) => location.pathname === path;
 
+  useEffect(() => {
+    const needsChange = localStorage.getItem('needsPasswordChange') === 'true';
+    setNeedsPasswordChange(needsChange);
+  }, [location]);
+
   const handleLogout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('needsPasswordChange');
     navigate('/login');
   };
 
@@ -45,30 +52,41 @@ const Navbar = () => {
 
           {/* Navigation Links */}
           <div className="flex space-x-8 items-center">
-            <Link
-              to="/"
-              className={`text-white hover:text-yellow-400 transition-colors duration-200 font-medium ${
-                isActive('/') ? 'text-yellow-400 border-b-2 border-yellow-400' : ''
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              to="/sessions"
-              className={`text-white hover:text-yellow-400 transition-colors duration-200 font-medium ${
-                isActive('/sessions') ? 'text-yellow-400 border-b-2 border-yellow-400' : ''
-              }`}
-            >
-              Sessions
-            </Link>
-            <Link
-              to="/my-talks"
-              className={`text-white hover:text-yellow-400 transition-colors duration-200 font-medium ${
-                isActive('/my-talks') ? 'text-yellow-400 border-b-2 border-yellow-400' : ''
-              }`}
-            >
-              My Talks
-            </Link>
+            {needsPasswordChange ? (
+              <>
+                {/* Disabled links when password change is required */}
+                <span className="text-gray-400 font-medium cursor-not-allowed">Home</span>
+                <span className="text-gray-400 font-medium cursor-not-allowed">Sessions</span>
+                <span className="text-gray-400 font-medium cursor-not-allowed">My Talks</span>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/"
+                  className={`text-white hover:text-yellow-400 transition-colors duration-200 font-medium ${
+                    isActive('/') ? 'text-yellow-400 border-b-2 border-yellow-400' : ''
+                  }`}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/sessions"
+                  className={`text-white hover:text-yellow-400 transition-colors duration-200 font-medium ${
+                    isActive('/sessions') ? 'text-yellow-400 border-b-2 border-yellow-400' : ''
+                  }`}
+                >
+                  Sessions
+                </Link>
+                <Link
+                  to="/my-talks"
+                  className={`text-white hover:text-yellow-400 transition-colors duration-200 font-medium ${
+                    isActive('/my-talks') ? 'text-yellow-400 border-b-2 border-yellow-400' : ''
+                  }`}
+                >
+                  My Talks
+                </Link>
+              </>
+            )}
             
             {/* Profile Dropdown */}
             <div 

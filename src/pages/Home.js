@@ -9,7 +9,17 @@ const Home = () => {
 
   useEffect(() => {
     const user = localStorage.getItem('user');
-    if (!user) navigate('/login');
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    
+    // Check if password change is required
+    const needsPasswordChange = localStorage.getItem('needsPasswordChange');
+    if (needsPasswordChange === 'true') {
+      navigate('/change-password');
+      return;
+    }
   }, [navigate]);
 
   return (

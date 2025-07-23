@@ -12,13 +12,25 @@ const SessionPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [pendingTalkId, setPendingTalkId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [enrollLoadingId, setEnrollLoadingId] = useState(null);
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    if (!user) navigate('/login');
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    
+    // Check if password change is required
+    const needsPasswordChange = localStorage.getItem('needsPasswordChange');
+    if (needsPasswordChange === 'true') {
+      navigate('/change-password');
+      return;
+    }
   }, [navigate, user]);
 
   useEffect(() => {
@@ -84,57 +96,82 @@ const SessionPage = () => {
   const handleConfirm = async () => {
     setModalVisible(false);
     setTimeout(() => setConfirmOpen(false), MODAL_TRANSITION_MS);
-
+    
     const talkId = pendingTalkId;
     setPendingTalkId(null);
+    
+    // Set loading state for specific talk
+    setEnrollLoadingId(talkId);
+    
+    // Clear previous messages
+    setErrorMessage('');
+    setSuccessMessage('');
 
-    const { data: eventData, error: eventError } = await supabase
-      .from('event')
-      .select('*')
-      .eq('event_event_id', talkId)
-      .single();
+    try {
+      const { data: eventData, error: eventError } = await supabase
+        .from('event')
+        .select('*')
+        .eq('event_event_id', talkId)
+        .single();
 
-    if (eventError || !eventData) {
-      setErrorMessage('Failed to fetch event details.');
-      return;
-    }
+      if (eventError || !eventData) {
+        setErrorMessage('Failed to fetch event details.');
+        setEnrollLoadingId(null);
+        return;
+      }
 
-    const currentCount = await getEnrollmentCount(talkId);
-    if (currentCount >= eventData.event_lokasi_kapasitas) {
-      setErrorMessage('Sorry, this talk is already full. Please choose another.');
-      return;
-    }
+      const currentCount = await getEnrollmentCount(talkId);
+      if (currentCount >= eventData.event_lokasi_kapasitas) {
+        setErrorMessage('Sorry, this talk is already full. Please choose another.');
+        setEnrollLoadingId(null);
+        return;
+      }
 
-    const session = eventData.event_sesi;
-    const column = session === 1 ? 'student_event_1' : 'student_event_2';
+      const session = eventData.event_sesi;
+      const column = session === 1 ? 'student_event_1' : 'student_event_2';
 
-    if (user[column]) {
-      setErrorMessage(`You have already enrolled in Session ${session}.`);
-      return;
-    }
+      if (user[column]) {
+        setErrorMessage(`You have already enrolled in Session ${session}.`);
+        setEnrollLoadingId(null);
+        return;
+      }
 
-    const { error: updateError } = await supabase
-      .from('student')
-      .update({ [column]: talkId })
-      .eq('student_email', user.student_email);
+      const { error: updateError } = await supabase
+        .from('student')
+        .update({ [column]: talkId })
+        .eq('student_email', user.student_email);
 
-    if (updateError) {
-      setErrorMessage('Enrollment failed: ' + updateError.message);
-      return;
-    }
+      if (updateError) {
+        setErrorMessage('Enrollment failed: ' + updateError.message);
+        setEnrollLoadingId(null);
+        return;
+      }
 
-    // Refetch updated student data and events
-    const { data: updatedStudent } = await supabase
-      .from('student')
-      .select('*')
-      .eq('student_email', user.student_email)
-      .single();
+      // Refetch updated student data and events
+      const { data: updatedStudent } = await supabase
+        .from('student')
+        .select('*')
+        .eq('student_email', user.student_email)
+        .single();
 
-    if (updatedStudent) {
-      localStorage.setItem('user', JSON.stringify(updatedStudent));
-      setEnrolledTalks(
-        [updatedStudent.student_event_1, updatedStudent.student_event_2].filter(Boolean)
-      );
+      if (updatedStudent) {
+        localStorage.setItem('user', JSON.stringify(updatedStudent));
+        setEnrolledTalks(
+          [updatedStudent.student_event_1, updatedStudent.student_event_2].filter(Boolean)
+        );
+        
+        // Show success message
+        setSuccessMessage(`Successfully enrolled in "${eventData.event_topik}"!`);
+        
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 5000);
+      }
+    } catch (error) {
+      setErrorMessage('An unexpected error occurred. Please try again.');
+    } finally {
+      setEnrollLoadingId(null);
     }
   };
 
@@ -170,16 +207,45 @@ const SessionPage = () => {
                     <p className="text-sm text-white/60 mb-4">
                       Location: {talk.event_lokasi} | Duration: {talk.event_durasi} min
                     </p>
-                    <button
-                      onClick={() => handleEnrollClick(talk.event_event_id)}
-                      disabled={enrolledTalks.includes(talk.event_event_id)}
-                      className={`group relative inline-flex items-center justify-center px-6 py-2 text-base font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105 hover:from-yellow-300 hover:to-orange-400 disabled:opacity-50`}
-                    >
-                      <span className="relative z-10">
-                        {enrolledTalks.includes(talk.event_event_id) ? 'Enrolled' : 'Enroll'}
-                      </span>
-                      <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
-                    </button>
+                    
+                    {enrolledTalks.includes(talk.event_event_id) ? (
+                      <button
+                        className="group relative inline-flex items-center justify-center px-6 py-2 text-base font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-full shadow-2xl cursor-default"
+                      >
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="relative z-10">You're Enrolled!</span>
+                        <span className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full blur opacity-30"></span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleEnrollClick(talk.event_event_id)}
+                        disabled={enrollLoadingId === talk.event_event_id}
+                        className={`group relative inline-flex items-center justify-center px-6 py-2 text-base font-bold text-white rounded-full shadow-2xl transition-all duration-300 ${
+                          enrollLoadingId === talk.event_event_id 
+                            ? 'bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed' 
+                            : 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:shadow-orange-500/25 hover:scale-105 hover:from-yellow-300 hover:to-orange-400'
+                        }`}
+                      >
+                        {enrollLoadingId === talk.event_event_id ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span className="relative z-10">Enrolling...</span>
+                          </>
+                        ) : (
+                          <span className="relative z-10">Enroll</span>
+                        )}
+                        <span className={`absolute inset-0 rounded-full blur opacity-30 transition-opacity ${
+                          enrollLoadingId === talk.event_event_id 
+                            ? 'bg-gradient-to-r from-gray-400 to-gray-500' 
+                            : 'bg-gradient-to-r from-yellow-400 to-orange-500 group-hover:opacity-50'
+                        }`}></span>
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -223,6 +289,26 @@ const SessionPage = () => {
             <div className="flex-1">{errorMessage}</div>
             <button
               onClick={() => setErrorMessage('')}
+              className="ml-4 px-3 py-1 rounded-full bg-white/20 hover:bg-white/40 text-white font-semibold transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Success Message */}
+      {successMessage && (
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 px-4">
+          <div className="bg-gradient-to-br from-green-500 via-emerald-500 to-teal-400 text-white rounded-xl p-4 w-full max-w-md shadow-2xl flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div className="flex-1">{successMessage}</div>
+            </div>
+            <button
+              onClick={() => setSuccessMessage('')}
               className="ml-4 px-3 py-1 rounded-full bg-white/20 hover:bg-white/40 text-white font-semibold transition"
             >
               Close

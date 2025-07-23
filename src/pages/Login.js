@@ -38,7 +38,16 @@ const Login = () => {
         }
         
         localStorage.setItem('user', JSON.stringify(data[0]));
-        navigate('/');
+        
+        // Check if password equals NIS (needs password change)
+        const student = data[0];
+        if (student.student_nis === student.student_password) {
+            localStorage.setItem('needsPasswordChange', 'true');
+            navigate('/change-password');
+        } else {
+            localStorage.removeItem('needsPasswordChange');
+            navigate('/');
+        }
     };
 
 
