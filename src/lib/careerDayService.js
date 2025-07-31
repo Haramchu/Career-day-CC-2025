@@ -309,6 +309,58 @@ export class CareerDayService {
     const nisPattern = /^\d{8,10}$/; // 8-10 digit angka
     return nisPattern.test(nis)
   }
+
+  // Teacher login
+  static async teacherLogin(email, password) {
+    try {
+      const { data, error } = await supabase
+        .rpc('teacher_login', {
+          teacher_email: email,
+          teacher_password: password
+        })
+
+      if (error) throw error
+
+      return { data, error: null }
+    } catch (error) {
+      return { data: null, error }
+    }
+  }
+
+  // Get student overview for teachers
+  static async getStudentOverview() {
+    try {
+      const { data, error } = await supabase
+        .from('teacher_student_overview')
+        .select('*')
+        .order('class', { ascending: true })
+        .order('name', { ascending: true })
+
+      if (error) throw error
+
+      return { data, error: null }
+    } catch (error) {
+      return { data: null, error }
+    }
+  }
+
+  // Get students by class (for non-admin teachers)
+  static async getStudentsByClass(classes) {
+    try {
+      const { data, error } = await supabase
+        .from('teacher_student_overview')
+        .select('*')
+        .in('class', classes)
+        .order('class', { ascending: true })
+        .order('name', { ascending: true })
+
+      if (error) throw error
+
+      return { data, error: null }
+    } catch (error) {
+      return { data: null, error }
+    }
+  }
 }
 
 export default CareerDayService
