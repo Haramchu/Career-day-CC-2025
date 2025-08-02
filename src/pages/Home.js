@@ -67,17 +67,18 @@ const Home = () => {
                 <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
                   <div className="text-3xl mb-2">📍</div>
                   <div className="font-semibold mb-1">Location</div>
-                  <div className="text-sm opacity-90">Canisius College Jakarta Campus</div>
+                  <div className="text-sm opacity-90">Canisius College Jakarta</div>
                 </div>
                 <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
                   <div className="text-3xl mb-2">📅</div>
                   <div className="font-semibold mb-1">Date</div>
-                  <div className="text-sm opacity-90">Coming Soon</div>
+                  <div className="text-sm opacity-90">14th August, 2025</div>
                 </div>
                 <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
                   <div className="text-3xl mb-2">⏰</div>
                   <div className="font-semibold mb-1">Time</div>
-                  <div className="text-sm opacity-90">9:00 AM - 3:00 PM</div>
+                  <div className="text-sm opacity-90">1st Session 9:30 AM - 10:45 AM</div>
+                  <div className="text-sm opacity-90">2nd Session 11:00 AM - 12:15 PM</div>
                 </div>
               </div>
             </div>
@@ -120,20 +121,6 @@ const Home = () => {
             >
               <span className="relative z-10">Enroll Now</span>
               <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
-            </Link>
-            <Link
-              to="/admin"
-              className="group relative inline-flex items-center justify-center px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 hover:from-blue-500 hover:to-purple-500 mr-2"
-            >
-              <span className="relative z-10">Admin Panel</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
-            </Link>
-            <Link
-              to="/debug-admin"
-              className="group relative inline-flex items-center justify-center px-6 py-2 text-xs font-bold text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-full shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 hover:from-red-500 hover:to-pink-500"
-            >
-              <span className="relative z-10">Debug Admin</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-red-600 to-pink-600 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
             </Link>
           </div>
         </div>

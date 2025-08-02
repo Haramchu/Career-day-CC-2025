@@ -94,84 +94,70 @@ const SessionPage = () => {
   };
 
   const handleConfirm = async () => {
+    // Hide the confirmation modal
     setModalVisible(false);
     setTimeout(() => setConfirmOpen(false), MODAL_TRANSITION_MS);
     
     const talkId = pendingTalkId;
     setPendingTalkId(null);
-    
-    // Set loading state for specific talk
-    setEnrollLoadingId(talkId);
+    setEnrollLoadingId(talkId); // Show loading spinner on button
     
     // Clear previous messages
     setErrorMessage('');
     setSuccessMessage('');
 
+    if (!user || !user.student_nis) {
+        setErrorMessage("Could not find your student ID to enroll.");
+        setEnrollLoadingId(null);
+        return;
+    }
+
     try {
-      const { data: eventData, error: eventError } = await supabase
-        .from('event')
-        .select('*')
-        .eq('event_event_id', talkId)
-        .single();
+      // Call the database function directly
+      const { data: rpcResponse, error: rpcError } = await supabase.rpc('enroll_student_in_event', {
+        p_student_nis: user.student_nis,
+        p_event_id: talkId,
+      });
 
-      if (eventError || !eventData) {
-        setErrorMessage('Failed to fetch event details.');
-        setEnrollLoadingId(null);
-        return;
+      if (rpcError) {
+        // This handles network errors or major database function errors
+        throw rpcError;
       }
 
-      const currentCount = await getEnrollmentCount(talkId);
-      if (currentCount >= eventData.event_lokasi_kapasitas) {
-        setErrorMessage('Sorry, this talk is already full. Please choose another.');
-        setEnrollLoadingId(null);
-        return;
-      }
-
-      const session = eventData.event_sesi;
-      const column = session === 1 ? 'student_event_1' : 'student_event_2';
-
-      if (user[column]) {
-        setErrorMessage(`You have already enrolled in Session ${session}.`);
-        setEnrollLoadingId(null);
-        return;
-      }
-
-      const { error: updateError } = await supabase
-        .from('student')
-        .update({ [column]: talkId })
-        .eq('student_email', user.student_email);
-
-      if (updateError) {
-        setErrorMessage('Enrollment failed: ' + updateError.message);
-        setEnrollLoadingId(null);
-        return;
-      }
-
-      // Refetch updated student data and events
-      const { data: updatedStudent } = await supabase
-        .from('student')
-        .select('*')
-        .eq('student_email', user.student_email)
-        .single();
-
-      if (updatedStudent) {
-        localStorage.setItem('user', JSON.stringify(updatedStudent));
-        setEnrolledTalks(
-          [updatedStudent.student_event_1, updatedStudent.student_event_2].filter(Boolean)
-        );
+      // The function returns a string that we can check
+      if (rpcResponse.startsWith('Success')) {
+        setSuccessMessage(rpcResponse); // e.g., "Success: You have been enrolled..."
         
-        // Show success message
-        setSuccessMessage(`Successfully enrolled in "${eventData.event_topik}"!`);
+        // Refetch the student's data to update the UI
+        const { data: updatedStudent } = await supabase
+            .from('student')
+            .select('*')
+            .eq('student_nis', user.student_nis)
+            .single();
+
+        if (updatedStudent) {
+            localStorage.setItem('user', JSON.stringify(updatedStudent));
+            setEnrolledTalks(
+                [updatedStudent.student_event_1, updatedStudent.student_event_2].filter(Boolean)
+            );
+        }
         
-        // Clear success message after 5 seconds
-        setTimeout(() => {
-          setSuccessMessage('');
-        }, 5000);
+      } else {
+        // If it's not a success, it's a controlled error from our function
+        setErrorMessage(rpcResponse); // e.g., "Error: This event is full."
       }
+
     } catch (error) {
-      setErrorMessage('An unexpected error occurred. Please try again.');
+      setErrorMessage('Enrollment failed: ' + error.message);
     } finally {
+      // Stop the loading indicator on the button
       setEnrollLoadingId(null);
+      
+      // Optional: Clear messages after a few seconds
+      setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 5000);
     }
   };
 
@@ -203,7 +189,7 @@ const SessionPage = () => {
                     className="backdrop-blur-sm bg-white/10 border border-white/20 p-6 rounded-2xl text-white hover:shadow-xl transition-all duration-300"
                   >
                     <h3 className="text-xl font-bold mb-2">{talk.event_topik}</h3>
-                    <p className="text-white/90 mb-2">{talk.event_deskripsi}</p>
+                    <p className="text-white/90 mb-2">{talk.event_bidang}</p>
                     <p className="text-sm text-white/60 mb-4">
                       Location: {talk.event_lokasi} | Duration: {talk.event_durasi} min
                     </p>
