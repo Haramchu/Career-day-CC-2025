@@ -56,21 +56,21 @@ const TeacherLoginDebug = () => {
         setDebugInfo(prev => prev + '   Function exists!\n');
       }
 
-      // Test 4: Check actual teacher data
-      setDebugInfo(prev => prev + '4. Checking teacher data...\n');
-      const { data: teacherData, error: dataError } = await supabase
-        .from('teachers')
+      // Test 4: Check teacher_student_event_view
+      setDebugInfo(prev => prev + '4. Checking teacher_student_event_view...\n');
+      const { data: viewTest, error: viewError } = await supabase
+        .from('teacher_student_event_view')
         .select('*')
-        .limit(5);
+        .limit(3);
       
-      if (dataError) {
-        results.teacherData = `Failed: ${dataError.message}`;
-        setDebugInfo(prev => prev + `   Error: ${dataError.message}\n`);
+      if (viewError) {
+        results.eventView = `Failed: ${viewError.message}`;
+        setDebugInfo(prev => prev + `   Error: ${viewError.message}\n`);
       } else {
-        results.teacherData = `Found ${teacherData?.length || 0} teachers`;
-        setDebugInfo(prev => prev + `   Found ${teacherData?.length || 0} teacher records\n`);
-        if (teacherData && teacherData.length > 0) {
-          setDebugInfo(prev => prev + `   Sample teacher: ${teacherData[0].email}\n`);
+        results.eventView = `Found ${viewTest?.length || 0} records`;
+        setDebugInfo(prev => prev + `   Found ${viewTest?.length || 0} records in view\n`);
+        if (viewTest && viewTest.length > 0) {
+          setDebugInfo(prev => prev + `   Sample data: ${viewTest[0].student_nama || 'No name'} - ${viewTest[0].student_kelas || 'No class'}\n`);
         }
       }
 
@@ -78,8 +78,8 @@ const TeacherLoginDebug = () => {
       setDebugInfo(prev => prev + '5. Testing login with sample credentials...\n');
       const { data: loginTest, error: loginError } = await supabase
         .rpc('teacher_login', {
-          teacher_email: 'budi.santoso@sekolah.sch.id',
-          teacher_password: 'password123'
+          teacher_email: 'admin@kanisius.sch.id',
+          teacher_password: 'admin123'
         });
       
       if (loginError) {
@@ -153,7 +153,7 @@ const TeacherLoginDebug = () => {
             </ul>
           </li>
           <li>3. Verify the teacher_login function exists in Supabase Functions</li>
-          <li>4. Test login with: budi.santoso@sekolah.sch.id / password123</li>
+          <li>4. Test login dengan: admin@kanisius.sch.id / admin123</li>
         </ol>
       </div>
     </div>

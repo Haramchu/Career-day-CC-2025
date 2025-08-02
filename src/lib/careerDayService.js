@@ -361,6 +361,75 @@ export class CareerDayService {
       return { data: null, error }
     }
   }
+
+  // Get student data from teacher_student_event_view
+  static async getTeacherStudentEventView(teacherClasses = null, isAdmin = false) {
+    try {
+      let query = supabase
+        .from('teacher_student_event_view')
+        .select('*')
+        .order('student_kelas', { ascending: true })
+        .order('student_nama', { ascending: true });
+
+      // Filter berdasarkan kelas jika bukan admin
+      if (!isAdmin && teacherClasses && teacherClasses.length > 0) {
+        query = query.in('student_kelas', teacherClasses);
+      }
+
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
+  }
+
+  // Get filtered student view data
+  static async getFilteredStudentView(filters = {}) {
+    try {
+      let query = supabase
+        .from('teacher_student_event_view')
+        .select('*');
+
+      // Apply filters
+      if (filters.classes && filters.classes.length > 0) {
+        query = query.in('student_kelas', filters.classes);
+      }
+
+      if (filters.searchTerm) {
+        query = query.or(`student_nama.ilike.%${filters.searchTerm}%,student_nis.ilike.%${filters.searchTerm}%`);
+      }
+
+      if (filters.status) {
+        switch (filters.status) {
+          case 'complete':
+            query = query.not('event_1_topik', 'is', null).not('event_2_topik', 'is', null);
+            break;
+          case 'incomplete':
+            query = query.or('event_1_topik.is.null,event_2_topik.is.null');
+            break;
+          case 'session_1_only':
+            query = query.not('event_1_topik', 'is', null).is('event_2_topik', null);
+            break;
+          case 'session_2_only':
+            query = query.is('event_1_topik', null).not('event_2_topik', 'is', null);
+            break;
+        }
+      }
+
+      query = query.order('student_kelas', { ascending: true }).order('student_nama', { ascending: true });
+
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
+  }
 }
 
 export default CareerDayService
