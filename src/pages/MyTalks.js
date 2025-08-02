@@ -150,7 +150,7 @@ const MyTalks = () => {
                 </div>
 
                 <h3 className="text-xl font-bold mb-2">{talk.event_topik}</h3>
-                <p className="text-white/90 mb-3">{talk.event_deskripsi}</p>
+                <p className="text-white/90 mb-3">{talk.event_bidang}</p>
 
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-white/70">{talk.event_lokasi}</div>

@@ -47,7 +47,7 @@ const Navbar = () => {
               alt="Canisius College Jakarta"
               className="w-8 h-8 object-contain"
             />
-            <span className="text-white font-bold text-lg">CC Career Day</span>
+            <span className="text-white font-bold text-lg hidden sm:inline">CC Career Day</span>
           </Link>
 
           {/* Navigation Links */}
