@@ -113,13 +113,27 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="animate-pulse">
+          <div className="animate-pulse mb-8">
             <Link
               to="/sessions"
-              className="group relative inline-flex items-center justify-center px-12 py-4 text-lg font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105 hover:from-yellow-300 hover:to-orange-400"
+              className="group relative inline-flex items-center justify-center px-12 py-4 text-lg font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105 hover:from-yellow-300 hover:to-orange-400 mr-4"
             >
               <span className="relative z-10">Enroll Now</span>
               <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
+            </Link>
+            <Link
+              to="/admin"
+              className="group relative inline-flex items-center justify-center px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 hover:from-blue-500 hover:to-purple-500 mr-2"
+            >
+              <span className="relative z-10">Admin Panel</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
+            </Link>
+            <Link
+              to="/debug-admin"
+              className="group relative inline-flex items-center justify-center px-6 py-2 text-xs font-bold text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-full shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 hover:from-red-500 hover:to-pink-500"
+            >
+              <span className="relative z-10">Debug Admin</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-red-600 to-pink-600 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
             </Link>
           </div>
         </div>
