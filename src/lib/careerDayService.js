@@ -185,7 +185,7 @@ export class CareerDayService {
       }
 
       // 2. Cek apakah siswa sudah memilih kelas di sesi yang sama
-      const { hasChosen, enrollment: existingEnrollment } = await this.hasStudentChosenSession(studentId, talk.session)
+      const { hasChosen } = await this.hasStudentChosenSession(studentId, talk.session)
       
       if (hasChosen) {
         return { 
@@ -415,6 +415,8 @@ export class CareerDayService {
             break;
           case 'session_2_only':
             query = query.is('event_1_topik', null).not('event_2_topik', 'is', null);
+            break;
+          default:
             break;
         }
       }

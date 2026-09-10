@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import CareerDayService from '../lib/careerDayService'
 
 // Custom hook untuk menangani enrollment logic
@@ -8,6 +8,21 @@ export const useCareerDay = () => {
   const [enrollments, setEnrollments] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  // Load enrollments siswa
+  const loadStudentEnrollments = useCallback(async (studentId) => {
+    try {
+      const { data, error } = await CareerDayService.getStudentEnrollments(studentId)
+      
+      if (error) throw error
+      
+      setEnrollments(data || [])
+      return { success: true, enrollments: data }
+    } catch (err) {
+      setError(err.message)
+      return { success: false, error: err.message }
+    }
+  }, [])
 
   // Validasi dan login siswa
   const loginStudent = useCallback(async (nis) => {
@@ -38,7 +53,7 @@ export const useCareerDay = () => {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [loadStudentEnrollments])
 
   // Load semua talks
   const loadTalks = useCallback(async () => {
@@ -72,21 +87,6 @@ export const useCareerDay = () => {
       return { success: false, error: err.message }
     } finally {
       setLoading(false)
-    }
-  }, [])
-
-  // Load enrollments siswa
-  const loadStudentEnrollments = useCallback(async (studentId) => {
-    try {
-      const { data, error } = await CareerDayService.getStudentEnrollments(studentId)
-      
-      if (error) throw error
-      
-      setEnrollments(data || [])
-      return { success: true, enrollments: data }
-    } catch (err) {
-      setError(err.message)
-      return { success: false, error: err.message }
     }
   }, [])
 

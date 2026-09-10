@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CareerDayService } from '../lib/careerDayService';
 
 const ITEMS_PER_PAGE = 10;
@@ -15,11 +15,7 @@ const AdminPanel = ({ teacher, onLogout }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'student_kelas', direction: 'asc' });
 
 
-  useEffect(() => {
-    loadStudentData();
-  }, [teacher]);
-
-  const loadStudentData = async () => {
+  const loadStudentData = useCallback(async () => {
     setLoading(true);
     setError('');
     
@@ -46,14 +42,9 @@ const AdminPanel = ({ teacher, onLogout }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [teacher]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-    applyFilters();
-  }, [searchTerm, statusFilter, students]);
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...students];
 
     // filter by class
@@ -92,11 +83,22 @@ const AdminPanel = ({ teacher, onLogout }) => {
             !student.event_1_topik && student.event_2_topik
           );
           break;
+        default:
+          break;
       }
     }
 
     setFilteredStudents(filtered);
-  };
+  }, [searchTerm, statusFilter, students]);
+
+  useEffect(() => {
+    loadStudentData();
+  }, [loadStudentData]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    applyFilters();
+  }, [applyFilters]);
 
   const exportToCSV = () => {
     if (filteredStudents.length === 0) {
