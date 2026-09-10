@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import TeacherLogin from '../components/TeacherLogin';
-import AdminPanel from '../components/AdminPanel';
+import TeacherLogin from './TeacherLogin';
+import AdminPanel from './AdminPanel';
 
 const TeacherAdmin = () => {
   const [teacher, setTeacher] = useState(null);
