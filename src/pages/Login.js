@@ -16,32 +16,25 @@ const Login = () => {
         const cleanEmail = email.trim();
         const cleanPassword = password.trim();
 
-        const { data, error } = await supabase
-            .from('student')
-            .select('*')
-            .eq('student_email', cleanEmail)
-            .eq('student_password', cleanPassword);
+        const { data, error } = await supabase.rpc('student_login', {
+            student_email_input: cleanEmail,
+            student_password_input: cleanPassword
+        });
 
         if (error) {
             setError('Login failed: ' + error.message);
             return;
         }
 
-        if (!data || data.length === 0) {
+        if (!data || !data.success || !data.student) {
             setError('Invalid email or password');
             return;
         }
-
-        if (data.length > 1) {
-            setError('Multiple users found. Please contact support.');
-            return;
-        }
         
-        localStorage.setItem('user', JSON.stringify(data[0]));
+        localStorage.setItem('user', JSON.stringify(data.student));
         
         // Check if password equals NIS (needs password change)
-        const student = data[0];
-        if (student.student_nis === student.student_password) {
+        if (data.needs_password_change) {
             localStorage.setItem('needsPasswordChange', 'true');
             navigate('/change-password');
         } else {

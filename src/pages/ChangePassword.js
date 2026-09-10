@@ -76,35 +76,21 @@ const ChangePassword = () => {
         return;
       }
 
-      // Verify current password first
-      const { data: verifyData, error: verifyError } = await supabase
-        .from('student')
-        .select('*')
-        .eq('student_email', user.student_email)
-        .eq('student_password', formData.currentPassword);
+      const { data: changeData, error: changeError } = await supabase.rpc('student_change_password', {
+        student_email_input: user.student_email,
+        current_password: formData.currentPassword,
+        new_password: formData.newPassword
+      });
 
-      if (verifyError) {
-        setMessage('Error verifying current password: ' + verifyError.message);
+      if (changeError) {
+        setMessage('Failed to change password: ' + changeError.message);
         setMessageType('error');
         setLoading(false);
         return;
       }
 
-      if (!verifyData || verifyData.length === 0) {
-        setMessage('Current password is incorrect');
-        setMessageType('error');
-        setLoading(false);
-        return;
-      }
-
-      // Update password in database
-      const { error: updateError } = await supabase
-        .from('student')
-        .update({ student_password: formData.newPassword })
-        .eq('student_email', user.student_email);
-
-      if (updateError) {
-        setMessage('Failed to update password: ' + updateError.message);
+      if (!changeData?.success) {
+        setMessage(changeData?.error || 'Failed to change password');
         setMessageType('error');
         setLoading(false);
         return;

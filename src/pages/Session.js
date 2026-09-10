@@ -19,7 +19,7 @@ const SessionPage = () => {
   const [enrollLoadingId, setEnrollLoadingId] = useState(null);
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [user] = useState(() => JSON.parse(localStorage.getItem('user')));
 
   useEffect(() => {
     if (!user) {
@@ -59,7 +59,7 @@ const SessionPage = () => {
       // Fetch current student's data
       const { data: student, error: studentError } = await supabase
         .from('student')
-        .select('*')
+        .select('student_email, student_nis, student_event_1, student_event_2')
         .eq('student_email', user.student_email)
         .single();
 
@@ -77,7 +77,7 @@ const SessionPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   const sessions = events.reduce((acc, event) => {
     const sessionId = event.event_sesi;
@@ -124,7 +124,11 @@ const SessionPage = () => {
         setSuccessMessage(rpcResponse);
         
         // Refetch both student and count data to update the UI instantly
-        const { data: updatedStudent } = await supabase.from('student').select('*').eq('student_nis', user.student_nis).single();
+        const { data: updatedStudent } = await supabase
+          .from('student')
+          .select('student_email, student_nis, student_event_1, student_event_2')
+          .eq('student_nis', user.student_nis)
+          .single();
         const { data: updatedCounts } = await supabase.rpc('get_all_event_counts');
 
         if (updatedStudent) {
