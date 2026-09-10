@@ -1,6 +1,8 @@
 -- Setup untuk Admin Panel Guru
 -- Tambahkan script ini ke schema.sql yang sudah ada
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- Tabel untuk data guru
 CREATE TABLE IF NOT EXISTS teachers (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -105,9 +107,9 @@ BEGIN
     );
   END IF;
   
-  -- Verifikasi password (dalam implementasi real, gunakan bcrypt)
-  -- Untuk sekarang, kita bandingkan langsung (tidak aman untuk production)
-  IF teacher_record.password_hash = teacher_password THEN
+    -- Verify a bcrypt-compatible password hash.
+    IF teacher_record.password_hash IS NOT NULL
+      AND crypt(teacher_password, teacher_record.password_hash) = teacher_record.password_hash THEN
     is_valid := TRUE;
   END IF;
   
@@ -135,7 +137,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Sample data guru (untuk testing)
 -- Password dalam implementasi real harus di-hash
 INSERT INTO teachers (nip, name, email, password_hash, classes, is_admin) VALUES 
-('196801011990031001', 'Pak Budi Santoso', 'budi.santoso@sekolah.sch.id', 'password123', ARRAY['12 IPA 1', '12 IPA 2'], true),
-('197505101998032002', 'Bu Sari Wijaya', 'sari.wijaya@sekolah.sch.id', 'password123', ARRAY['12 IPS 1', '12 IPS 2'], false),
-('198003151999031003', 'Pak Agus Rahman', 'agus.rahman@sekolah.sch.id', 'password123', ARRAY['12 IPA 3'], false)
+('196801011990031001', 'Pak Budi Santoso', 'budi.santoso@sekolah.sch.id', crypt('password123', gen_salt('bf', 12)), ARRAY['12 IPA 1', '12 IPA 2'], true),
+('197505101998032002', 'Bu Sari Wijaya', 'sari.wijaya@sekolah.sch.id', crypt('password123', gen_salt('bf', 12)), ARRAY['12 IPS 1', '12 IPS 2'], false),
+('198003151999031003', 'Pak Agus Rahman', 'agus.rahman@sekolah.sch.id', crypt('password123', gen_salt('bf', 12)), ARRAY['12 IPA 3'], false)
 ON CONFLICT (nip) DO NOTHING;

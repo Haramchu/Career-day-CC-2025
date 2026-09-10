@@ -11,7 +11,7 @@ const MyTalks = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [pendingTalkId, setPendingTalkId] = useState(null);
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [user] = useState(() => JSON.parse(localStorage.getItem('user')));
 
   useEffect(() => {
     if (!user) {
@@ -32,7 +32,7 @@ const MyTalks = () => {
 
       const { data: studentData, error: studentError } = await supabase
         .from('student')
-        .select('*')
+        .select('student_email, student_event_1, student_event_2')
         .eq('student_email', user.student_email)
         .single();
 
@@ -65,7 +65,7 @@ const MyTalks = () => {
 
     if (!user) return navigate('/login');
     fetchMyTalks();
-  }, [navigate]);
+  }, [navigate, user]);
 
   const MODAL_TRANSITION_MS = 200;
 
